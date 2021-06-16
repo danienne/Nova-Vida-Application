@@ -7,4 +7,6 @@ A Aplicação foi feita em Asp.net CORE MVC utilizando entity framework core, pa
 no NugetPackeges Console;
 2 - Após o banco criado já pode rodar a aplicação;
 
+Obs.: O arquivo de importação dos dados dos alunos é o "importar alunos.txt";
+
 Obrigada! :)
