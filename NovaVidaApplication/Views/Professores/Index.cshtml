@@ -1,0 +1,39 @@
+﻿@model IEnumerable<NovaVidaApplication.Models.Professor>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Listagem de Professores</h1>
+
+<div class="row m-vertical-10">
+    <div class="col-12 text-right">
+        <a class="btn btn-primary btn-sm" asp-action="CriarProfessor">Criar Professor</a>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Nome do Professor
+            </th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    <a class="btn btn-secondary btn-sm" asp-action="AtualizarProfessor" asp-route-id="@item.ProfessorId">Editar</a> 
+                    <a class="btn btn-primary btn-sm" asp-controller="Alunos" asp-action="Index" asp-route-id="@item.ProfessorId">Lista de Alunos</a> 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

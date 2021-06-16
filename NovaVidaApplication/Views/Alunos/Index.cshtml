@@ -1,0 +1,121 @@
+﻿@model IEnumerable<NovaVidaApplication.Models.Aluno>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (@Model.Count() > 0)
+{
+    <h1>Lista dos Alunos do Professor  @Model.FirstOrDefault().Professor.Nome</h1>
+}
+else
+{
+    <h1>Lista dos Alunos </h1>
+
+}
+<div class="row m-vertical-10">
+    <div class="col-12">
+        <a asp-action="Index" asp-controller="Professores"><i class="icon-link"></i>Voltar para a Lista</a>
+    </div>
+</div>
+<div class="alert alert-danger" role="alert" id="error-alert">
+    Ocorreu um erro ao tentar importar o aquivo:
+    <span id="span-erro"></span>
+</div>
+<div class="alert alert-success" role="alert" id="success-alert">
+    Os Alunos foram importados com sucesso! Recarregue para verificar.
+</div>
+
+<div class="row m-vertical-10">
+    <div class="col-12">
+        <form method="post"
+              data-ajax-success="onSuccess" data-ajax="true" data-ajax-method="POST"
+              asp-action="CriarAluno"
+              asp-controller="Alunos"
+              enctype="multipart/form-data"
+              asp-route-id=" @ViewContext.RouteData.Values["id"]"
+              id="arquivoForm"
+              onsubmit="return jQueryAjaxPost(this);">
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile" aria-describedby="inputGroupFileAddon04" value="Pesquisar">
+                    <label class="custom-file-label" for="postedFile">Escolha o Arquivo</label>
+                </div>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Importar Alunos</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row m-vertical-10">
+    <div class="col-12 text-right">
+        <a class="btn btn-primary btn-sm" asp-action="Index" asp-route-id=" @ViewContext.RouteData.Values["id"]">Recarregar</a>
+    </div>
+</div>
+<div id="view-all">
+    @await Html.PartialAsync("_ViewAll", Model)
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#error-alert").hide();
+            $("#success-alert").hide();
+        });
+
+        $('#postedFile').on('change',
+            function () {
+                var fileName = $(this).val();
+                $(this).next('.custom-file-label').html(fileName);
+            })
+
+        jQueryAjaxPost = form => {
+            try {
+                $.ajax({
+                    type: "GET",
+                    url: "/Configuration/GetConfigurationValue",
+                    data: {
+                        sectionName: "TempoBloqueio"
+                    }
+                }).done(
+                    function (parameterValue) {
+                        console.log(parameterValue);
+                        console.log($('#postedFile'));
+                        $('#postedFile').val('').prop('disabled', true);
+                        setTimeout(function () {
+                            $('#postedFile').val('').prop('disabled', false);
+                        }, parameterValue.parameter)
+                    });
+
+                $.ajax({
+                    type: 'POST',
+                    url: form.action,
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        console.log(res);
+                        if (res.isValid) {
+                            $("#success-alert").fadeTo(3000, 1000).slideUp(1000, function () {
+                                $("#success-alert").slideUp(500);
+                            });
+                        }
+                        else {
+                            $("#span-erro").text(res.errorMessage);
+                            $("#error-alert").fadeTo(3000, 1000).slideUp(1000, function () {
+                                $("#error-alert").slideUp(500);
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+                })
+                return false;
+            } catch (ex) {
+                console.log(ex)
+            }
+        }
+    </script>
+}

@@ -1,0 +1,34 @@
+﻿@model NovaVidaApplication.Models.Professor
+
+@{
+    ViewData["Title"] = "AtualizarProfessor";
+}
+
+<h1>Editar Professor</h1>
+
+<div class="row m-vertical-10">
+    <div class="col-12">
+        <a asp-action="Index"><i class="icon-link"></i>Voltar para a Lista</a>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AtualizarProfessor">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProfessorId" />
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" class="form-control" required />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
